@@ -46,10 +46,17 @@ namespace Treehouse.FitnessFrog.Controllers
             return View();
         }
 
-        [ActionName("Add"), HttpPost] //Allows me to associate Add AND Post with my new method
-        public ActionResult AddPost()
+        //[ActionName("Add")] Allows me to associate Add AND Post with my new method 
+        // now that I am overloading with parameters I can use the same method name
+        [HttpPost] 
+        public ActionResult AddPost(string date, string activityId, string duration, string intensity, string exclude, string notes)
         {
-
+            ViewBag.Date = date;
+            ViewBag.ActivityId= activityId;
+            ViewBag.Duration = duration;
+            ViewBag.Intensity = intensity;
+            ViewBag.Exclude = exclude;
+            ViewBag.Notes = notes;
 
             return View();
         }
