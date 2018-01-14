@@ -41,16 +41,17 @@ namespace Treehouse.FitnessFrog.Controllers
 
         public ActionResult Add()
         {
-
+            var entry = new Entry()
+            {
+                Date = DateTime.Today
+            };
            
             return View();
         }
 
-        //[ActionName("Add")] Allows me to associate Add AND Post with my new method 
         // now that I am overloading with parameters I can use the same method name
         [HttpPost] 
-        public ActionResult AddPost(DateTime? date, int? activityId, double? duration, 
-            Entry.IntensityLevel? intensity, bool? exclude, string notes)
+        public ActionResult Add(Entry entry)
         {
             //Because we used MVC it returns and checks input validation for us cut out the rest of the handling here
 
