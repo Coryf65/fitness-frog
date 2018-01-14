@@ -49,14 +49,19 @@ namespace Treehouse.FitnessFrog.Controllers
         //[ActionName("Add")] Allows me to associate Add AND Post with my new method 
         // now that I am overloading with parameters I can use the same method name
         [HttpPost] 
-        public ActionResult AddPost(string date, string activityId, string duration, string intensity, string exclude, string notes)
+        public ActionResult AddPost(DateTime? date, int? activityId, double? duration, 
+            Entry.IntensityLevel? intensity, bool? exclude, string notes)
         {
-            ViewBag.Date = date;
-            ViewBag.ActivityId= activityId;
-            ViewBag.Duration = duration;
-            ViewBag.Intensity = intensity;
-            ViewBag.Exclude = exclude;
-            ViewBag.Notes = notes;
+            //Could use this code to convert the string value to a date time (or use current way)
+            //DateTime dateValue;
+            //DateTime.TryParse(date, out dateValue);
+
+            ViewBag.Date = ModelState["date"].Value.AttemptedValue;
+            ViewBag.ActivityId= ModelState["activityId"].Value.AttemptedValue;
+            ViewBag.Duration = ModelState["duration"].Value.AttemptedValue;
+            ViewBag.Intensity = ModelState["intensity"].Value.AttemptedValue;
+            ViewBag.Exclude = ModelState["exclude"].Value.AttemptedValue;
+            ViewBag.Notes = ModelState["notes"].Value.AttemptedValue;
 
             return View();
         }
