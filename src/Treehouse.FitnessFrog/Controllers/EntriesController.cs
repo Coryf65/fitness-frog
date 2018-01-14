@@ -55,7 +55,7 @@ namespace Treehouse.FitnessFrog.Controllers
         {
             //Because we used MVC it returns and checks input validation for us cut out the rest of the handling here
 
-            return View();
+            return View(entry);
         }
 
         public ActionResult Edit(int? id)
