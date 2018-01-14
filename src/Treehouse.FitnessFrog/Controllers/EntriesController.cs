@@ -52,16 +52,7 @@ namespace Treehouse.FitnessFrog.Controllers
         public ActionResult AddPost(DateTime? date, int? activityId, double? duration, 
             Entry.IntensityLevel? intensity, bool? exclude, string notes)
         {
-            //Could use this code to convert the string value to a date time (or use current way)
-            //DateTime dateValue;
-            //DateTime.TryParse(date, out dateValue);
-
-            ViewBag.Date = ModelState["date"].Value.AttemptedValue;
-            ViewBag.ActivityId= ModelState["activityId"].Value.AttemptedValue;
-            ViewBag.Duration = ModelState["duration"].Value.AttemptedValue;
-            ViewBag.Intensity = ModelState["intensity"].Value.AttemptedValue;
-            ViewBag.Exclude = ModelState["exclude"].Value.AttemptedValue;
-            ViewBag.Notes = ModelState["notes"].Value.AttemptedValue;
+            //Because we used MVC it returns and checks input validation for us cut out the rest of the handling here
 
             return View();
         }
