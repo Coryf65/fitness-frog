@@ -46,7 +46,7 @@ namespace Treehouse.FitnessFrog.Controllers
                 Date = DateTime.Today
             };
            
-            return View();
+            return View(entry);
         }
 
         // now that I am overloading with parameters I can use the same method name
@@ -54,6 +54,12 @@ namespace Treehouse.FitnessFrog.Controllers
         public ActionResult Add(Entry entry)
         {
             //Because we used MVC it returns and checks input validation for us cut out the rest of the handling here
+            if (ModelState.IsValid) 
+            {
+                _entriesRepository.AddEntry(entry);
+
+               return RedirectToAction("Index");
+            }
 
             return View(entry);
         }
