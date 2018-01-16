@@ -15,10 +15,10 @@
 
             <div class="form-group">
                 @*Or we could use HTML 5 elements this is just another way to do it!*@
-                @Html.LabelFor(m => m.Date, new { @class = "control-label"})
-                @Html.TextBoxFor(m => m.Date,"{0:d}", new { @class = "form-control"})
+                @Html.LabelFor(m => m.Date, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Date, "{0:d}", new { @class = "form-control" })
                 @*<input type="text" id="Date" name="Date" class="form-control" value="@Html.Value("Date")" />*@
-                              
+
             </div>
 
             <div class="form-group">
@@ -33,12 +33,29 @@
 
             <div class="form-group">
                 @Html.LabelFor(m => m.Intensity, new { @class = "control-label" })
-                @Html.TextBoxFor(m => m.Intensity, new { @class = "form-control" })
+                <div>
+                    <label class="radio-inline">
+                        @Html.RadioButtonFor(m => m.Intensity,
+                         Entry.IntensityLevel.Low) @Entry.IntensityLevel.Low
+                    </label>
+                    <label class="radio-inline">
+                        @Html.RadioButtonFor(m => m.Intensity,
+                         Entry.IntensityLevel.Medium) @Entry.IntensityLevel.Medium
+                    </label>
+                    <label class="radio-inline">
+                        @Html.RadioButtonFor(m => m.Intensity,
+                         Entry.IntensityLevel.High) @Entry.IntensityLevel.High
+                    </label>
+                </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(m => m.Exclude, new { @class = "control-label" })
-                @Html.TextBoxFor(m => m.Exclude, new { @class = "form-control" })
+
+                <div class="checkbox">
+                    <label>
+                        @Html.CheckBoxFor(m => m.Exclude) @Html.DisplayNameFor(m => m.Exclude)
+                    </label>
+                </div>
             </div>
 
         </div>
@@ -47,7 +64,7 @@
 
             <div class="form-group">
                 @Html.LabelFor(m => m.Notes, new { @class = "control-label" })
-                @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+                @Html.TextAreaFor(m => m.Notes, 14, 20, new { @class = "form-control" })
             </div>
 
         </div>
