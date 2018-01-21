@@ -58,6 +58,8 @@ namespace Treehouse.FitnessFrog.Controllers
         public ActionResult Add(Entry entry)
         {
 
+            //ModelState.AddModelError("", "This is a Global Message");
+
             //If there aren't any "Duration" field validation erros than make sure the duration is greater than "0".
             if (ModelState.IsValidField("Duration") && entry.Duration <= 0)
             {
