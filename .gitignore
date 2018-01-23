@@ -6,3 +6,6 @@
 /src/.vs/Treehouse.FitnessFrog/v15/Server/sqlite3/db.lock
 /src/.vs/Treehouse.FitnessFrog/v15/Server
 /src/.vs/Treehouse.FitnessFrog/v15/Server/sqlite3
+/src/Treehouse.FitnessFrog/bin
+/src/.vs
+/src/Treehouse.FitnessFrog/obj/Debug
