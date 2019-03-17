@@ -9,3 +9,6 @@
 /src/Treehouse.FitnessFrog/bin
 /src/.vs
 /src/Treehouse.FitnessFrog/obj/Debug
+
+/obj
+/bin
