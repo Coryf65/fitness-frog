@@ -11,17 +11,26 @@ namespace Treehouse.FitnessFrog.Data
     /// example of how to do data persistence, but rather as workaround for
     /// not having a database to persist data to.
     /// </summary>
-    public class ActivitiesRepository
+    /// <summary>
+    /// Repository for activities.
+    /// </summary>
+    public class ActivitiesRepository : BaseRepository<Activity>
     {
+        public ActivitiesRepository(Context context)
+            : base(context)
+        {
+        }
+
         /// <summary>
         /// Returns a collection of activities.
         /// </summary>
         /// <returns>A list of activities.</returns>
-        public List<Activity> GetActivities()
+        public IList<Activity> GetList()
         {
-            return Data.Activities
+            return Context.Activities
                 .OrderBy(a => a.Name)
                 .ToList();
         }
     }
+
 }

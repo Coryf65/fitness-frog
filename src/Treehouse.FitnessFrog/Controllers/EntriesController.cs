@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -12,18 +13,22 @@ namespace Treehouse.FitnessFrog.Controllers
     public class EntriesController : Controller
     {
         private EntriesRepository _entriesRepository = null;
+        private ActivitiesRepository _activitiesRepository = null;
 
-        public EntriesController()
+        public EntriesController(EntriesRepository entriesRepository, ActivitiesRepository activitiesRepository)
         {
-            _entriesRepository = new EntriesRepository();
+            _entriesRepository = entriesRepository;
+            _activitiesRepository = activitiesRepository;
         }
 
         public ActionResult Index()
         {
-            List<Entry> entries = _entriesRepository.GetEntries();
+            var userId = User.Identity.GetUserId();
+
+            IList<Entry> entries = _entriesRepository.GetList(userId);
 
             // Calculate the total activity.
-            double totalActivity = entries
+            decimal totalActivity = entries
                 .Where(e => e.Exclude == false)
                 .Sum(e => e.Duration);
 
@@ -33,41 +38,49 @@ namespace Treehouse.FitnessFrog.Controllers
                 .Distinct()
                 .Count();
 
-            ViewBag.TotalActivity = totalActivity;
-            ViewBag.AverageDailyActivity = (totalActivity / (double)numberOfActiveDays);
+            var viewModel = new EntriesIndexViewModel()
+            {
+                Entries = entries,
+                TotalActivity = totalActivity,
+                AverageDailyActivity = numberOfActiveDays != 0 ?
+                    (totalActivity / numberOfActiveDays) : 0
+            };
 
-            return View(entries);
+            return View(viewModel);
         }
 
         public ActionResult Add()
         {
-            var entry = new Entry()
-            {
-                Date = DateTime.Today,
-            };
+            var viewModel = new EntriesAddViewModel();
 
-            SetupActivitiesSelectListItems();
+            viewModel.Entry.UserId = User.Identity.GetUserId();
 
-            return View(entry);
+            viewModel.Init(_activitiesRepository);
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public ActionResult Add(Entry entry)
+        [ValidateAntiForgeryToken]
+        public ActionResult Add(EntriesAddViewModel viewModel)
         {
-            ValidateEntry(entry);
+            ValidateEntry(viewModel.Entry);
 
             if (ModelState.IsValid)
             {
-                _entriesRepository.AddEntry(entry);
+                var entry = viewModel.Entry;
+                entry.UserId = User.Identity.GetUserId();
+
+                _entriesRepository.Add(viewModel.Entry);
 
                 TempData["Message"] = "Your entry was successfully added!";
 
                 return RedirectToAction("Index");
             }
 
-            SetupActivitiesSelectListItems();
+            viewModel.Init(_activitiesRepository);
 
-            return View(entry);
+            return View(viewModel);
         }
 
         public ActionResult Edit(int? id)
@@ -77,35 +90,52 @@ namespace Treehouse.FitnessFrog.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Entry entry = _entriesRepository.GetEntry((int)id);
+            var userId = User.Identity.GetUserId();
+
+            Entry entry = _entriesRepository.Get((int)id, userId);
 
             if (entry == null)
             {
                 return HttpNotFound();
             }
 
-            SetupActivitiesSelectListItems();
+            var viewModel = new EntriesEditViewModel()
+            {
+                Entry = entry
+            };
+            viewModel.Init(_activitiesRepository);
 
-            return View(entry);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public ActionResult Edit(Entry entry)
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(EntriesEditViewModel viewModel)
         {
-            ValidateEntry(entry);
+            ValidateEntry(viewModel.Entry);
 
             if (ModelState.IsValid)
             {
-                _entriesRepository.UpdateEntry(entry);
+                var entry = viewModel.Entry;
+                var userId = User.Identity.GetUserId();
+
+                if (!_entriesRepository.EntryOwnedByUserId(entry.Id, userId))
+                {
+                    return HttpNotFound();
+                }
+
+                entry.UserId = userId;
+
+                _entriesRepository.Update(viewModel.Entry);
 
                 TempData["Message"] = "Your entry was successfully updated!";
 
                 return RedirectToAction("Index");
             }
 
-            SetupActivitiesSelectListItems();
+            viewModel.Init(_activitiesRepository);
 
-            return View(entry);
+            return View(viewModel);
         }
 
         public ActionResult Delete(int? id)
@@ -115,30 +145,35 @@ namespace Treehouse.FitnessFrog.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // TODO: Retrieve entry for the provided id parameter value
-            Entry entry = _entriesRepository.GetEntry((int)id);
+            var userId = User.Identity.GetUserId();
+            Entry entry = _entriesRepository.Get((int)id, userId);
 
-            // TODO Return "Not Found " if entry was not found
             if (entry == null)
             {
                 return HttpNotFound();
             }
 
-            // TODO Pass the entry to the view
             return View(entry);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Delete(int id)
         {
-            // TODO delete the entry
-            _entriesRepository.DeleteEntry(id);
+            var userId = User.Identity.GetUserId();
+
+            if (!_entriesRepository.EntryOwnedByUserId(id, userId))
+            {
+                return HttpNotFound();
+            }
+
+            _entriesRepository.Delete(id);
 
             TempData["Message"] = "Your entry was successfully deleted!";
 
-            // TODO Redirect to the entry list page
             return RedirectToAction("Index");
         }
+
         private void ValidateEntry(Entry entry)
         {
             // If there aren't any "Duration" field validation errors
@@ -148,12 +183,6 @@ namespace Treehouse.FitnessFrog.Controllers
                 ModelState.AddModelError("Duration",
                     "The Duration field value must be greater than '0'.");
             }
-        }
-
-        private void SetupActivitiesSelectListItems()
-        {
-            ViewBag.ActivitiesSelectListItems = new SelectList(
-                Data.Data.Activities, "Id", "Name");
         }
     }
 }
