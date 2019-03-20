@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Treehouse.FitnessFrog.Models;
 using Treehouse.FitnessFrog.ViewModels;
 
 namespace Treehouse.FitnessFrog.Controllers
@@ -19,21 +20,22 @@ namespace Treehouse.FitnessFrog.Controllers
         [HttpPost]
         public ActionResult Register(AccountRegisterViewModel viewModel)
         {
-
             // If the ModelState is valid...
+            if (ModelState.IsValid)
+            {
+                // Instantiate a User object
+                var user = new User { UserName = viewModel.Email, Email = viewModel.Email };
 
-            // Instantiate a User object
+                // Create the user
 
-            // Create the user
+                // If the user was successfully created...
 
-            // If the user was successfully created...
+                // Sign-in the user and redirect them to the web app's "Home" page
 
-            // Sign-in the user and redirect them to the web app's "Home" page
+                // If there were errors...
 
-            // If there were errors...
-
-            // Add model errors
-
+                // Add model errors
+            }
 
             return View(viewModel);
         }
