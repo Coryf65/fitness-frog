@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using Treehouse.FitnessFrog.Data;
 using Treehouse.FitnessFrog.Models;
+using Treehouse.FitnessFrog.ViewModels;
 
 namespace Treehouse.FitnessFrog.Controllers
 {
