@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Treehouse.FitnessFrog.Data;
+using Treehouse.FitnessFrog.Security;
 
 namespace Treehouse.FitnessFrog.Models
 {
